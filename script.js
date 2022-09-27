@@ -1,3 +1,25 @@
+const player = document.querySelector('#player');
+const computer = document.querySelector('#computer');
+const final = document.querySelector('#final');
+let playerScore = 0;
+let computerScore = 0;
+
+const buttons = Array.from(document.querySelectorAll('button'));
+buttons.forEach(button => button.addEventListener('click', game));
+
+final.querySelector('button').addEventListener('click',() =>{
+    location.reload();
+});
+
+function game(e){
+
+    const playerSelection = e.target.innerHTML;
+    const computerSelection = getComputerChoice();
+
+    playRound(playerSelection, computerSelection);
+
+}
+
 function getComputerChoice (){
     let arr = ["ROCK", "PAPER", "SCISSORS"];
     let random = Math.floor(Math.random() * arr.length);
@@ -7,57 +29,56 @@ function getComputerChoice (){
 
 function playRound( playerSelection, computerSelection) {
     
-    let player = playerSelection.toUpperCase();
-
+    let playerChoice = playerSelection.toUpperCase();
+    const result = document.querySelector('#result');
+    const description = document.querySelector("#description");
  
-   if (player == "ROCK" && computerSelection == "SCISSORS" ){
-        win +=1;
-        return "You WIN! Rock beats scissors."
+   if (playerChoice == "ROCK" && computerSelection == "SCISSORS" ){
+        playerScore += 1;
+        player.textContent = `Player: ${playerScore}`;
+        result.textContent = "You WIN!";
+        description.textContent =  "Rock beats scissors.";
     }
-    else if (player == "ROCK" && computerSelection == "PAPER") {
-        lose +=1;
-        return "You lose! Paper beats rock."
+    else if (playerChoice == "ROCK" && computerSelection == "PAPER") {
+        computerScore += 1;
+        computer.textContent = `Computer: ${computerScore}`;
+        result.textContent = "You lose!";
+        description.textContent = "Paper beats rock.";
     }
-    else if (player == "PAPER" && computerSelection == "SCISSORS") {
-        lose +=1;
-        return "You lose! Scissors beats paper."
+    else if (playerChoice == "PAPER" && computerSelection == "SCISSORS") {
+        computerScore += 1;
+        computer.textContent = `Computer: ${computerScore}`;
+        result.textContent = "You lose!";
+        description.textContent = "Scissors beats paper.";
     }
-    else if (player == "PAPER" && computerSelection == "ROCK") {
-        win += 1;
-        return "You WIN! Paper beats rock."
+    else if (playerChoice == "PAPER" && computerSelection == "ROCK") {
+        playerScore += 1;
+        player.textContent = `Player: ${playerScore}`;
+        result.textContent = "You WIN!";
+        description.textContent = "Paper beats rock.";
     }
-    else if (player == "SCISSORS" && computerSelection == "ROCK") {
-        lose += 1;
-        return "You lose!Rock beats scissors. "
+    else if (playerChoice == "SCISSORS" && computerSelection == "ROCK") {
+        computerScore += 1;
+        computer.textContent = `Computer: ${computerScore}`;
+        result.textContent = "You lose!";
+        description.textContent = "Rock beats scissors.";
     }
-    else if (player == "SCISSORS" && computerSelection == "PAPER") {
-        win += 1;
-        return "You WIN! Scissors beats paper."
+    else if (playerChoice == "SCISSORS" && computerSelection == "PAPER") {
+        playerScore += 1;
+        player.textContent = `Player: ${playerScore}`;
+        result.textContent = "You WIN!";
+        description.textContent = "Scissors beats paper.";
     } else {
-        return "It's a Tie!"
+        result.textContent = "It's a Tie!";
+        description.textContent = "";
     }
 
-}
-
-function game(){
-    for (let i = 0 ; i < 5 ; i++ ){
-
-        const playerSelection = prompt("Rock, paper or scissors?");
-        const computerSelection = getComputerChoice();
-
-        console.log(playRound(playerSelection, computerSelection));   
+    if(playerScore === 5){
+       final.querySelector('p').textContent = "YOU WON!";
+       final.showModal();
+    }else if (computerScore === 5){
+        final.querySelector('p').textContent = "YOU LOSE!";
+        final.showModal();
     }
-}
 
-let win = 0;
-let lose = 0;
-
-game();
-
-if (win > lose){
-    console.log("You WIN!");
-}else if (lose > win){
-    console.log("You lose!");
-}else {
-    console.log("It's a tie.");
 }
