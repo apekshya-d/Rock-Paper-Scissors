@@ -1,14 +1,13 @@
-const player = document.querySelector('#player');
-const computer = document.querySelector('#computer');
 const final = document.querySelector('#final');
-let playerScore = 0;
-let computerScore = 0;
+let rounds = [];
 
 const buttons = Array.from(document.querySelectorAll('button'));
 buttons.forEach(button => button.addEventListener('click', game));
 
 final.querySelector('button').addEventListener('click',() =>{
-    location.reload();
+   rounds = [];
+   showResults();
+   final.close();
 });
 
 function game(e){
@@ -17,7 +16,7 @@ function game(e){
     const computerSelection = getComputerChoice();
 
     playRound(playerSelection, computerSelection);
-
+    showResults();
 }
 
 function getComputerChoice (){
@@ -30,53 +29,48 @@ function getComputerChoice (){
 function playRound( playerSelection, computerSelection) {
     
     let playerChoice = playerSelection.toUpperCase();
+
+    const RULES = {
+        ROCK : "PAPER",
+        PAPER : "SCISSORS",
+        SCISSORS : "ROCK",
+    };
+
+    if (playerChoice === computerSelection){
+        rounds.push({result: "It's a Tie!", description: "", winner: ""});
+    }else if (playerChoice === RULES[computerSelection]){
+        rounds.push({result: "YOU WIN!", description: `${playerChoice} beats ${computerSelection}`, winner: "player" });
+    }else {
+        rounds.push({result: "YOU LOSE!", description: `${computerSelection} beats ${playerChoice}`, winner: "computer"});
+    };
+}
+
+function showResults() {
+
     const result = document.querySelector('#result');
     const description = document.querySelector("#description");
- 
-   if (playerChoice == "ROCK" && computerSelection == "SCISSORS" ){
-        playerScore += 1;
-        player.textContent = `Player: ${playerScore}`;
-        result.textContent = "You WIN!";
-        description.textContent =  "Rock beats scissors.";
-    }
-    else if (playerChoice == "ROCK" && computerSelection == "PAPER") {
-        computerScore += 1;
-        computer.textContent = `Computer: ${computerScore}`;
-        result.textContent = "You lose!";
-        description.textContent = "Paper beats rock.";
-    }
-    else if (playerChoice == "PAPER" && computerSelection == "SCISSORS") {
-        computerScore += 1;
-        computer.textContent = `Computer: ${computerScore}`;
-        result.textContent = "You lose!";
-        description.textContent = "Scissors beats paper.";
-    }
-    else if (playerChoice == "PAPER" && computerSelection == "ROCK") {
-        playerScore += 1;
-        player.textContent = `Player: ${playerScore}`;
-        result.textContent = "You WIN!";
-        description.textContent = "Paper beats rock.";
-    }
-    else if (playerChoice == "SCISSORS" && computerSelection == "ROCK") {
-        computerScore += 1;
-        computer.textContent = `Computer: ${computerScore}`;
-        result.textContent = "You lose!";
-        description.textContent = "Rock beats scissors.";
-    }
-    else if (playerChoice == "SCISSORS" && computerSelection == "PAPER") {
-        playerScore += 1;
-        player.textContent = `Player: ${playerScore}`;
-        result.textContent = "You WIN!";
-        description.textContent = "Scissors beats paper.";
-    } else {
-        result.textContent = "It's a Tie!";
-        description.textContent = "";
+    const player = document.querySelector('#player');
+    const computer = document.querySelector('#computer');   
+    playerScore = rounds.filter((round)=> round.winner === "player").length;
+    computerScore = rounds.filter((round)=> round.winner === "computer").length;
+
+    if (rounds.length === 0){
+        result.textContent = "Let's play";
+        description.textContent = "First one to Score 5 wins";
+        player.textContent = "player: 0";
+        computer.textContent = "computer: 0";
+        return;
     }
 
-    if(playerScore === 5){
-       final.querySelector('p').textContent = "YOU WON!";
-       final.showModal();
-    }else if (computerScore === 5){
+    result.textContent = rounds[rounds.length-1].result;
+    description.textContent = rounds[rounds.length-1].description;
+    player.textContent = `player: ${playerScore}`;
+    computer.textContent = `computer: ${computerScore}`;
+    
+    if (playerScore === 5) {
+        final.querySelector('p').textContent = "YOU WON!";
+        final.showModal();
+    }else if (computerScore === 5) {
         final.querySelector('p').textContent = "YOU LOSE!";
         final.showModal();
     }
